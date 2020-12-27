@@ -227,6 +227,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 249347373}
+  - component: {fileID: 249347374}
   m_Layer: 0
   m_Name: ParentGridObject
   m_TagString: GridParent
@@ -260,6 +261,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &249347374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249347372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d66a018cd397f84fafc6b4223b7e0ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assetName: Cliff_Solo
+  assetMaterialName: Cliff
+  assetTextureName: Cliff
+  bundleName: E:\Projects\AssetBundle\AssetBundle\Assets\StreamingAssets\assetbundlebasic
 --- !u!1 &556351235
 GameObject:
   m_ObjectHideFlags: 0
