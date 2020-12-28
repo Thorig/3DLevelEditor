@@ -1,3 +1,5 @@
+using LevelEditor3D.Util;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,16 +23,31 @@ namespace LevelEditor3D.Editor
         static private bool isLeftMouseButtonPressed;
         #endregion
 
+        #region Attributes for palette
+        static private AssetBundleLoader loader;
+        static private Material tmp;
+        static private GameObject tmpO;
+
+        static private string[] assetName;
+        static private int selectedAsset = 0;
+        #endregion
+
+
         [MenuItem("Window/3DLevelEditorWindow")]
         public static void Init()
         {
+            assetName = new string[2];
+            assetName[0] = "Cliff_Solo";
+            assetName[1] = "Cliff";
+
+            loader = new AssetBundleLoader();
             EditorWindow.GetWindow(typeof(EditorWindow3DLevelEditor));
         }
 
         private void OnEnable()
         {
-            material = Resources.Load("Materials/Grid", typeof(Material)) as Material;
-            materialMouseOver = Resources.Load("Materials/GridMouseOver", typeof(Material)) as Material;
+            material = Resources.Load("Editor3D/Materials/Grid", typeof(Material)) as Material;
+            materialMouseOver = Resources.Load("Editor3D/Materials/GridMouseOver", typeof(Material)) as Material;
 
             isStampPressed = true;
             setButtonStylesAndContent();
@@ -45,7 +62,7 @@ namespace LevelEditor3D.Editor
         {
             if (stampStyle == null)
             {
-                stampStyle = setGUIStyleForButton("Images/IconStamp", "Images/IconStampActive");
+                stampStyle = setGUIStyleForButton("Editor3D/Images/IconStamp", "Editor3D/Images/IconStampActive");
             }
         }
 
@@ -53,10 +70,10 @@ namespace LevelEditor3D.Editor
         {
             GUIStyle style = new GUIStyle();
             style.active.textColor = Color.white;
-            style.active.background = (Texture2D)Resources.Load("Images/IconStampActive");
-            style.hover.background = (Texture2D)Resources.Load("Images/IconStampActive");
+            style.active.background = (Texture2D)Resources.Load(activeButton);
+            style.hover.background = (Texture2D)Resources.Load(activeButton);
             style.hover.textColor = Color.white;
-            style.normal.background = (Texture2D)Resources.Load("Images/IconStamp");
+            style.normal.background = (Texture2D)Resources.Load(normalButton);
             style.normal.textColor = Color.white;
             style.fixedHeight = 32;
             style.fixedWidth = 32;
@@ -77,35 +94,53 @@ namespace LevelEditor3D.Editor
 
             GUILayout.Label("Palette");
             GUILayout.BeginHorizontal("box");
-            if(isStampPressed)
+            if (isStampPressed)
             {
                 loadPaletteForStamp();
             }
+
             GUILayout.EndHorizontal();
+
+            int counter = 0;
+            foreach (string assetN in assetName)
+            {
+                if (GUILayout.Button(assetN, stampStyle))
+                {
+                    selectedAsset = counter;
+                }
+                counter++;
+            }
+
+            if (GUILayout.Button("test", stampStyle))
+            {
+                ManifestReader m = new ManifestReader();
+                m.Main();
+            }
         }
 
         private void loadPaletteForStamp()
         {
-        
+
         }
 
         private void placeAsset(Vector3 position)
         {
-            string assetName = "Cliff_Solo";
             string bundleName = "E:\\Projects\\AssetBundle\\AssetBundle\\Assets\\StreamingAssets\\assetbundlebasic";
-
-            AssetBundle localAssetBundle = AssetBundle.LoadFromFile(bundleName);
-
-            if (localAssetBundle != null)
+            try
             {
-                GameObject asset = localAssetBundle.LoadAsset<GameObject>(assetName);
-                asset.transform.position = position;
-                Instantiate(asset);
-                localAssetBundle.Unload(false);
-                EditorUtility.SetDirty(asset);
+                loader.loadBundle(bundleName);
+                tmpO = loader.getGameObject(assetName[selectedAsset]);
+                EditorUtility.SetDirty(tmpO);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
+            finally
+            {
+                loader.cleanup();
             }
         }
-
 
         public void OnSceneGUICustom(SceneView sceneView)
         {
@@ -177,6 +212,8 @@ namespace LevelEditor3D.Editor
 
         void OnDestroy()
         {
+            loader.cleanup();
+            loader = null;
             SceneView.duringSceneGui -= OnSceneGUICustom;
             gridParent = null;
         }
