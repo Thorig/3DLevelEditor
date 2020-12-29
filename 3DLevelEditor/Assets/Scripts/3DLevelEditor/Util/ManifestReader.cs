@@ -1,46 +1,85 @@
 ﻿using UnityEngine;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace LevelEditor3D.Util
 {
     public class ManifestReader
     {
-        public void Main()
+        public List<AssetsBundle> parseManifest(string manifest)
         {
+            List<AssetsBundle> assetsBundles = new List<AssetsBundle>();
+                        
             //Create the XmlDocument.
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml("<?xml version='1.0' ?>" +
-                "<prefabs>" +
-                    "<prefab filename='Cliff_Solo'>" +
-                        "<icon normal='CliffIconNormal' active='CliffIconActive' />" +
-                    "</prefab>" +
-                "</prefabs>");
+            doc.Load(manifest);
+            
+            XmlNodeList elemList = doc.GetElementsByTagName("assetsbundle");
 
-            XmlNodeList elemList = doc.GetElementsByTagName("prefab");
+            //Loop through all assetbundles
             for (int i = 0; i < elemList.Count; i++)
             {
-                XmlAttributeCollection attrs = elemList[i].Attributes;
-                for (int x = 0; x < attrs.Count; x++)
-                {
-                    Debug.Log(attrs[x].Name + " " + attrs[x].Value);//filename + value
-                }
-                if(elemList[i].HasChildNodes)
-                {
-                    XmlNodeList childList = elemList[i].ChildNodes;
+                AssetsBundle assetsBundle = new AssetsBundle();
 
-                    for (int y = 0; y < childList.Count; y++)
+                XmlAttributeCollection assetsBundleAttrs = elemList[i].Attributes;
+                for (int x = 0; x < assetsBundleAttrs.Count; x++)
+                {
+                    if (assetsBundleAttrs[x].Name.Equals("location"))
                     {
-                        if (childList[y].Name.CompareTo("icon") == 0)
+                        assetsBundle.location = assetsBundleAttrs[x].Value;
+                    }
+                    if (assetsBundleAttrs[x].Name.Equals("filename"))
+                    {
+                        assetsBundle.name = assetsBundleAttrs[x].Value;
+                    }
+                }
+
+                XmlNodeList prefabsList = elemList[i].ChildNodes;
+
+                for (int iPrefab = 0; iPrefab < prefabsList.Count; iPrefab++)
+                {
+                    Prefab prefab = new Prefab();
+
+                    XmlAttributeCollection prefabAttrs = prefabsList[iPrefab].Attributes;
+                    for (int x = 0; x < prefabAttrs.Count; x++)
+                    {
+                        if(prefabAttrs[x].Name.Equals("filename"))
                         {
-                            XmlAttributeCollection childAttrs = childList[y].Attributes;
-                            for (int z = 0; z < childAttrs.Count; z++)
+                            prefab.name = prefabAttrs[x].Value;
+                        }
+                        if (prefabAttrs[x].Name.Equals("groupname"))
+                        {
+                            prefab.group = prefabAttrs[x].Value;
+                        }
+                    }
+                    if (prefabsList[iPrefab].HasChildNodes)
+                    {
+                        XmlNodeList prefabChildList = prefabsList[iPrefab].ChildNodes;
+
+                        for (int y = 0; y < prefabChildList.Count; y++)
+                        {
+                            if (prefabChildList[y].Name.CompareTo("icon") == 0)
                             {
-                                Debug.Log(childAttrs[z].Name + " " + childAttrs[z].Value);//normal + value active + value
+                                XmlAttributeCollection childAttrs = prefabChildList[y].Attributes;
+                                for (int z = 0; z < childAttrs.Count; z++)
+                                {
+                                    if (childAttrs[z].Name.Equals("normal"))
+                                    {
+                                        prefab.iconNormal = childAttrs[z].Value;
+                                    }
+                                    if (childAttrs[z].Name.Equals("active"))
+                                    {
+                                        prefab.iconActive = childAttrs[z].Value;
+                                    }
+                                }
                             }
                         }
                     }
+                    assetsBundle.prefabList.Add(prefab);
                 }
+                assetsBundles.Add(assetsBundle);
             }
+            return assetsBundles;
         }
     }
 }

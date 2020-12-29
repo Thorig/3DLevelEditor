@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LevelEditor3D.Util
@@ -7,8 +8,9 @@ namespace LevelEditor3D.Util
     {
         private AssetBundle localAssetBundle;
          
-        public void loadBundle(string bundleName)
+        public List<string> loadBundle(string bundleName)
         {
+            Debug.Log(bundleName);
             AssetBundle.UnloadAllAssetBundles(true);
 
             localAssetBundle = AssetBundle.LoadFromFile(bundleName);
@@ -16,6 +18,42 @@ namespace LevelEditor3D.Util
             {
                 throw new Exception("Can't load asset bundle " + bundleName);
             }
+            string tmp = "";
+            string[] names = localAssetBundle. GetAllAssetNames();
+            List<string> listWithNames = new List<string>();
+
+            foreach (string name in names)
+            {
+                int i = name.LastIndexOf('/');
+                if(i < 0)
+                {
+                    i = name.LastIndexOf('\\');
+                }
+                tmp = name.Substring(i + 1);
+                i = tmp.LastIndexOf('.');
+                tmp = tmp.Substring(0, i);
+                listWithNames.Add(tmp);
+            }
+
+            GameObject[] gList = localAssetBundle.LoadAllAssets<GameObject>();
+            foreach (GameObject g in gList)
+            {
+                Debug.Log(g.name);
+            }
+             
+            return listWithNames;
+        }
+
+        public GameObject[] getAllGameObjects()
+        {
+            GameObject[] gameObjects = localAssetBundle.LoadAllAssets<GameObject>();
+
+            if (gameObjects == null)
+            {
+                throw new Exception("Can't load GameObjects from AssetBundle");
+            }
+
+            return gameObjects;
         }
 
         public Material getMaterial(string assetName)
@@ -32,6 +70,18 @@ namespace LevelEditor3D.Util
             return assetMaterial;
         }
 
+        public Texture2D getTexture2D(string assetName)
+        {
+            Texture2D asset = localAssetBundle.LoadAsset<Texture2D>(assetName);
+
+            if (asset == null)
+            {
+                throw new Exception("Can't load GameObject " + assetName + " from AssetBundle");
+            }
+                        
+            return asset;
+        }
+
         public GameObject getGameObject(string assetName)
         {
             GameObject asset = localAssetBundle.LoadAsset<GameObject>(assetName);
@@ -41,17 +91,16 @@ namespace LevelEditor3D.Util
                 throw new Exception("Can't load GameObject " + assetName + " from AssetBundle");
             }
 
-            GameObject sceneOBject = GameObject.Instantiate(asset);
             localAssetBundle.Unload(false);
 
-            return sceneOBject;
+            return asset;
         }
 
-        public void cleanup()
+        public void cleanup(bool cleanup)
         {
             if (localAssetBundle != null)
             {
-                localAssetBundle?.Unload(true);
+                localAssetBundle?.Unload(cleanup);
             }
         }
     }

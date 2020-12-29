@@ -1,5 +1,6 @@
 using LevelEditor3D.Util;
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,23 +25,21 @@ namespace LevelEditor3D.Editor
         #endregion
 
         #region Attributes for palette
-        static private AssetBundleLoader loader;
-        static private Material tmp;
-        static private GameObject tmpO;
+        static private PaletteService paletteService;
+ //       static private AssetBundleLoader loader;
+  //      static private GameObject tmpO;
 
-        static private string[] assetName;
+   //     static private string[] assetName;
         static private int selectedAsset = 0;
+        static private int selectedAssetsBundle = 0;
+    //    static private List<string> listWithNames;
         #endregion
 
 
         [MenuItem("Window/3DLevelEditorWindow")]
         public static void Init()
         {
-            assetName = new string[2];
-            assetName[0] = "Cliff_Solo";
-            assetName[1] = "Cliff";
-
-            loader = new AssetBundleLoader();
+            paletteService = new PaletteService();
             EditorWindow.GetWindow(typeof(EditorWindow3DLevelEditor));
         }
 
@@ -82,6 +81,22 @@ namespace LevelEditor3D.Editor
             return style;
         }
 
+        private GUIStyle setGUIStyleForButton(Texture2D normalButton, Texture2D activeButton)
+        {
+            GUIStyle style = new GUIStyle();
+            style.active.textColor = Color.white;
+            style.active.background = activeButton;
+            style.hover.background = activeButton;
+            style.hover.textColor = Color.white;
+            style.normal.background = normalButton;
+            style.normal.textColor = Color.white;
+            style.fixedHeight = 32;
+            style.fixedWidth = 32;
+            style.alignment = TextAnchor.LowerCenter;
+
+            return style;
+        }
+
         void OnGUI()
         {
             GUILayout.Label("Tools");
@@ -98,48 +113,41 @@ namespace LevelEditor3D.Editor
             {
                 loadPaletteForStamp();
             }
-
             GUILayout.EndHorizontal();
-
-            int counter = 0;
-            foreach (string assetN in assetName)
-            {
-                if (GUILayout.Button(assetN, stampStyle))
-                {
-                    selectedAsset = counter;
-                }
-                counter++;
-            }
-
-            if (GUILayout.Button("test", stampStyle))
-            {
-                ManifestReader m = new ManifestReader();
-                m.Main();
-            }
         }
 
         private void loadPaletteForStamp()
         {
+            if (!paletteService.isLoaded)
+            {
+                paletteService.loadPalette();                
+            }
 
+            List<AssetsBundle> bundles = paletteService.getAssetsBundles();
+            int bundleCounter = 0;
+            int prefabCounter = 0;
+
+            foreach (AssetsBundle bundle in bundles)
+            {
+                foreach(Prefab p in bundle.prefabList)
+                {
+                    Debug.Log(p.textNormal + " "  + p.textActive);
+                    if (GUILayout.Button(p.name, setGUIStyleForButton(p.textNormal, p.textActive)))
+                    {
+                        selectedAssetsBundle = bundleCounter;
+                        selectedAsset = prefabCounter;
+                    }
+                    prefabCounter++;
+                }
+                bundleCounter++;
+            }
         }
 
         private void placeAsset(Vector3 position)
         {
-            string bundleName = "E:\\Projects\\AssetBundle\\AssetBundle\\Assets\\StreamingAssets\\assetbundlebasic";
-            try
-            {
-                loader.loadBundle(bundleName);
-                tmpO = loader.getGameObject(assetName[selectedAsset]);
-                EditorUtility.SetDirty(tmpO);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex.Message);
-            }
-            finally
-            {
-                loader.cleanup();
-            }
+            GameObject sceneOBject = GameObject.Instantiate(paletteService.getPrefab(selectedAssetsBundle, selectedAsset));
+            sceneOBject.transform.position = position;
+            EditorUtility.SetDirty(sceneOBject);
         }
 
         public void OnSceneGUICustom(SceneView sceneView)
@@ -212,8 +220,8 @@ namespace LevelEditor3D.Editor
 
         void OnDestroy()
         {
-            loader.cleanup();
-            loader = null;
+            paletteService.cleanup();
+            paletteService = null;
             SceneView.duringSceneGui -= OnSceneGUICustom;
             gridParent = null;
         }
