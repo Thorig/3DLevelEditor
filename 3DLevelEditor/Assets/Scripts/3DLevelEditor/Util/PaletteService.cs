@@ -7,11 +7,11 @@ namespace LevelEditor3D.Util
     public class PaletteService
     {
         public bool isLoaded { get; set; }
-        private string manifestFile = "Assetsbundlemanifest.xml";
+        private string manifestFile = "Assetbundlemanifest.xml";
 
         private ManifestReader manifestReader = new ManifestReader();
         private AssetBundleLoader assetBundleLoader = new AssetBundleLoader();
-        private List<AssetsBundle> assetsBundles;
+        private List<AssetBundle> assetBundles;
 
         public PaletteService()
         {
@@ -20,13 +20,13 @@ namespace LevelEditor3D.Util
 
         public void cleanup()
         {
-            assetsBundles.Clear();
+            assetBundles.Clear();
             assetBundleLoader.cleanup(true);
         }
 
-        public List<AssetsBundle> getAssetsBundles()
+        public List<AssetBundle> getAssetBundles()
         {
-            return assetsBundles;
+            return assetBundles;
         }
 
         public void loadPalette()
@@ -35,29 +35,29 @@ namespace LevelEditor3D.Util
             {
                 isLoaded = true;
 
-                assetsBundles = manifestReader.parseManifest(manifestFile);
+                assetBundles = manifestReader.parseManifest(manifestFile);
 
                 try
                 {
-                    assetBundleLoader.loadBundle(assetsBundles[0].location);
-                    assetsBundles[0].gameObjects = assetBundleLoader.getAllGameObjects();
+                    assetBundleLoader.loadBundle(assetBundles[0].location);
+                    assetBundles[0].gameObjects = assetBundleLoader.getAllGameObjects();
                     int i = 0;
-                    foreach (GameObject go in assetsBundles[0].gameObjects)
+                    foreach (GameObject go in assetBundles[0].gameObjects)
                     {
-                        for(i = 0; i < assetsBundles[0].prefabList.Count; i++)
+                        for(i = 0; i < assetBundles[0].prefabList.Count; i++)
                         {
-                            if(assetsBundles[0].prefabList[i].name.Equals(go.name))
+                            if(assetBundles[0].prefabList[i].name.Equals(go.name))
                             {
-                                assetsBundles[0].prefabList[i].index = i;
+                                assetBundles[0].prefabList[i].index = i;
                                 break;
                             }
                         }
                     }
                     i = 0;
-                    foreach (Prefab prefab in assetsBundles[0].prefabList)
+                    foreach (Prefab prefab in assetBundles[0].prefabList)
                     {
-                        assetsBundles[0].prefabList[i].textNormal = assetBundleLoader.getTexture2D(prefab.iconNormal);
-                        assetsBundles[0].prefabList[i].textActive = assetBundleLoader.getTexture2D(prefab.iconActive);
+                        assetBundles[0].prefabList[i].textNormal = assetBundleLoader.getTexture2D(prefab.iconNormal);
+                        assetBundles[0].prefabList[i].textActive = assetBundleLoader.getTexture2D(prefab.iconActive);
                         i++;
                     }
                 }
@@ -72,9 +72,9 @@ namespace LevelEditor3D.Util
             }
         }
 
-        public GameObject getPrefab(int selectedAssetsBundle, int selectedAsset)
+        public GameObject getPrefab(int selectedAssetBundle, int selectedAsset)
         {
-            return assetsBundles[selectedAssetsBundle].gameObjects[assetsBundles[selectedAssetsBundle].prefabList[selectedAsset].index];
+            return assetBundles[selectedAssetBundle].gameObjects[assetBundles[selectedAssetBundle].prefabList[selectedAsset].index];
         }
     }
 }

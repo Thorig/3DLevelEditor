@@ -6,9 +6,9 @@ namespace LevelEditor3D.Util
 {
     public class ManifestReader
     {
-        public List<AssetsBundle> parseManifest(string manifest)
+        public List<AssetBundle> parseManifest(string manifest)
         {
-            List<AssetsBundle> assetsBundles = new List<AssetsBundle>();
+            List<AssetBundle> assetsBundles = new List<AssetBundle>();
                         
             //Create the XmlDocument.
             XmlDocument doc = new XmlDocument();
@@ -19,7 +19,7 @@ namespace LevelEditor3D.Util
             //Loop through all assetbundles
             for (int i = 0; i < elemList.Count; i++)
             {
-                AssetsBundle assetsBundle = new AssetsBundle();
+                AssetBundle assetsBundle = new AssetBundle();
 
                 XmlAttributeCollection assetsBundleAttrs = elemList[i].Attributes;
                 for (int x = 0; x < assetsBundleAttrs.Count; x++)

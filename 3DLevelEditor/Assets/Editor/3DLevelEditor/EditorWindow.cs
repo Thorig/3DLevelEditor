@@ -26,15 +26,9 @@ namespace LevelEditor3D.Editor
 
         #region Attributes for palette
         static private PaletteService paletteService;
- //       static private AssetBundleLoader loader;
-  //      static private GameObject tmpO;
-
-   //     static private string[] assetName;
         static private int selectedAsset = 0;
-        static private int selectedAssetsBundle = 0;
-    //    static private List<string> listWithNames;
+        static private int selectedAssetBundle = 0;
         #endregion
-
 
         [MenuItem("Window/3DLevelEditorWindow")]
         public static void Init()
@@ -123,18 +117,17 @@ namespace LevelEditor3D.Editor
                 paletteService.loadPalette();                
             }
 
-            List<AssetsBundle> bundles = paletteService.getAssetsBundles();
+            List<AssetBundle> bundles = paletteService.getAssetBundles();
             int bundleCounter = 0;
             int prefabCounter = 0;
 
-            foreach (AssetsBundle bundle in bundles)
+            foreach (AssetBundle bundle in bundles)
             {
                 foreach(Prefab p in bundle.prefabList)
                 {
-                    Debug.Log(p.textNormal + " "  + p.textActive);
                     if (GUILayout.Button(p.name, setGUIStyleForButton(p.textNormal, p.textActive)))
                     {
-                        selectedAssetsBundle = bundleCounter;
+                        selectedAssetBundle = bundleCounter;
                         selectedAsset = prefabCounter;
                     }
                     prefabCounter++;
@@ -145,7 +138,7 @@ namespace LevelEditor3D.Editor
 
         private void placeAsset(Vector3 position)
         {
-            GameObject sceneOBject = GameObject.Instantiate(paletteService.getPrefab(selectedAssetsBundle, selectedAsset));
+            GameObject sceneOBject = GameObject.Instantiate(paletteService.getPrefab(selectedAssetBundle, selectedAsset));
             sceneOBject.transform.position = position;
             EditorUtility.SetDirty(sceneOBject);
         }

@@ -6,18 +6,19 @@ namespace LevelEditor3D.Util
 {
     public class AssetBundleLoader
     {
-        private AssetBundle localAssetBundle;
+        private UnityEngine.AssetBundle localAssetBundle;
          
         public List<string> loadBundle(string bundleName)
         {
             Debug.Log(bundleName);
-            AssetBundle.UnloadAllAssetBundles(true);
+            UnityEngine.AssetBundle.UnloadAllAssetBundles(true);
 
-            localAssetBundle = AssetBundle.LoadFromFile(bundleName);
+            localAssetBundle = UnityEngine.AssetBundle.LoadFromFile(bundleName);
             if (localAssetBundle == null)
             {
                 throw new Exception("Can't load asset bundle " + bundleName);
             }
+
             string tmp = "";
             string[] names = localAssetBundle. GetAllAssetNames();
             List<string> listWithNames = new List<string>();
@@ -33,12 +34,6 @@ namespace LevelEditor3D.Util
                 i = tmp.LastIndexOf('.');
                 tmp = tmp.Substring(0, i);
                 listWithNames.Add(tmp);
-            }
-
-            GameObject[] gList = localAssetBundle.LoadAllAssets<GameObject>();
-            foreach (GameObject g in gList)
-            {
-                Debug.Log(g.name);
             }
              
             return listWithNames;
