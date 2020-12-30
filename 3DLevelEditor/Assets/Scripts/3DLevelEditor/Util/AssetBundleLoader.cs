@@ -10,7 +10,6 @@ namespace LevelEditor3D.Util
          
         public List<string> loadBundle(string bundleName)
         {
-            Debug.Log(bundleName);
             UnityEngine.AssetBundle.UnloadAllAssetBundles(true);
 
             localAssetBundle = UnityEngine.AssetBundle.LoadFromFile(bundleName);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace LevelEditor3D.Util
@@ -42,16 +43,18 @@ namespace LevelEditor3D.Util
                     assetBundleLoader.loadBundle(assetBundles[0].location);
                     assetBundles[0].gameObjects = assetBundleLoader.getAllGameObjects();
                     int i = 0;
+                    int index = 0;
                     foreach (GameObject go in assetBundles[0].gameObjects)
                     {
-                        for(i = 0; i < assetBundles[0].prefabList.Count; i++)
+                        for (i = 0; i < assetBundles[0].prefabList.Count; i++)
                         {
-                            if(assetBundles[0].prefabList[i].name.Equals(go.name))
+                            if (assetBundles[0].prefabList[i].name.Equals(go.name))
                             {
-                                assetBundles[0].prefabList[i].index = i;
+                                assetBundles[0].prefabList[i].index = index;
                                 break;
                             }
                         }
+                        index++;
                     }
                     i = 0;
                     foreach (Prefab prefab in assetBundles[0].prefabList)
@@ -72,9 +75,11 @@ namespace LevelEditor3D.Util
             }
         }
 
-        public GameObject getPrefab(int selectedAssetBundle, int selectedAsset)
+        public void placeAsset(Vector3 position, int selectedAssetBundle, int selectedAsset)
         {
-            return assetBundles[selectedAssetBundle].gameObjects[assetBundles[selectedAssetBundle].prefabList[selectedAsset].index];
+            GameObject sceneOBject = GameObject.Instantiate(assetBundles[selectedAssetBundle].gameObjects[selectedAsset]);
+            sceneOBject.transform.position = position;
+            EditorUtility.SetDirty(sceneOBject);
         }
     }
 }

@@ -61,18 +61,7 @@ namespace LevelEditor3D.Editor
 
         private GUIStyle setGUIStyleForButton(string normalButton, string activeButton)
         {
-            GUIStyle style = new GUIStyle();
-            style.active.textColor = Color.white;
-            style.active.background = (Texture2D)Resources.Load(activeButton);
-            style.hover.background = (Texture2D)Resources.Load(activeButton);
-            style.hover.textColor = Color.white;
-            style.normal.background = (Texture2D)Resources.Load(normalButton);
-            style.normal.textColor = Color.white;
-            style.fixedHeight = 32;
-            style.fixedWidth = 32;
-            style.alignment = TextAnchor.LowerCenter;
-
-            return style;
+            return setGUIStyleForButton((Texture2D)Resources.Load(normalButton), (Texture2D)Resources.Load(activeButton));
         }
 
         private GUIStyle setGUIStyleForButton(Texture2D normalButton, Texture2D activeButton)
@@ -87,6 +76,9 @@ namespace LevelEditor3D.Editor
             style.fixedHeight = 32;
             style.fixedWidth = 32;
             style.alignment = TextAnchor.LowerCenter;
+            style.padding = new RectOffset(2, 0, 2, 0);
+            style.contentOffset = new Vector2(2, 2);
+            style.margin = new RectOffset(2, 0, 2, 0);
 
             return style;
         }
@@ -119,7 +111,6 @@ namespace LevelEditor3D.Editor
 
             List<AssetBundle> bundles = paletteService.getAssetBundles();
             int bundleCounter = 0;
-            int prefabCounter = 0;
 
             foreach (AssetBundle bundle in bundles)
             {
@@ -128,26 +119,18 @@ namespace LevelEditor3D.Editor
                     if (GUILayout.Button(p.name, setGUIStyleForButton(p.textNormal, p.textActive)))
                     {
                         selectedAssetBundle = bundleCounter;
-                        selectedAsset = prefabCounter;
+                        selectedAsset = p.index;
                     }
-                    prefabCounter++;
                 }
                 bundleCounter++;
             }
-        }
-
-        private void placeAsset(Vector3 position)
-        {
-            GameObject sceneOBject = GameObject.Instantiate(paletteService.getPrefab(selectedAssetBundle, selectedAsset));
-            sceneOBject.transform.position = position;
-            EditorUtility.SetDirty(sceneOBject);
         }
 
         public void OnSceneGUICustom(SceneView sceneView)
         {
             if (Event.current.isKey && Event.current.type == EventType.KeyDown)
             {
-                handleKeyStrokes();
+                gridParent.handleKeyStrokes();
             }
             else if (Event.current.keyCode == KeyCode.LeftControl && Event.current.type == EventType.KeyUp)
             {
@@ -157,21 +140,18 @@ namespace LevelEditor3D.Editor
             {
                 handleMousePosition();
             }
+            else 
+            {
+                if (Event.current.isKey && Event.current.type == EventType.KeyUp &&
+                    Event.current.keyCode == KeyCode.P)
+                {
+                    paletteService.placeAsset(currentTile.transform.position, selectedAssetBundle, selectedAsset);
+                }
+            }
         }
 
         private void handleMousePosition()
         {
-            /*
-            if (Event.current.button == 0)
-            {
-                isLeftMouseButtonPressed = true;
-            }
-            if (Event.current.button != 0 && isLeftMouseButtonPressed)
-            {
-                isLeftMouseButtonPressed = false;
-                placeAsset(currentTile.transform.position);
-            }
-            */
             Vector2 guiPosition = Event.current.mousePosition;
             Ray ray = HandleUtility.GUIPointToWorldRay(guiPosition);
             if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit))
@@ -199,19 +179,7 @@ namespace LevelEditor3D.Editor
                 }
             }
         }
-
-        private void handleKeyStrokes()
-        {
-            if (Event.current.keyCode == KeyCode.LeftControl)
-            {
-                gridParent.setLctrlPressed(true);
-            }
-            else
-            {
-                gridParent.updatePosition(Event.current.keyCode);
-            }
-        }
-
+        
         void OnDestroy()
         {
             paletteService.cleanup();

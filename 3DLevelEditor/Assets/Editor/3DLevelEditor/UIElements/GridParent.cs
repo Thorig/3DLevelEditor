@@ -15,6 +15,18 @@ namespace LevelEditor3D.Editor.UIElements
             gridParent = GameObject.FindGameObjectWithTag("GridParent");
         }
 
+        public void handleKeyStrokes()
+        {
+            if (Event.current.keyCode == KeyCode.LeftControl)
+            {
+                setLctrlPressed(true);
+            }
+            else
+            {
+                updatePosition(Event.current.keyCode);
+            }
+        }
+
         public void setLctrlPressed(bool isPressed)
         {
             lctrlPressed = isPressed;
