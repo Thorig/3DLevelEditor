@@ -161,6 +161,7 @@ namespace LevelEditor3D.Editor
 
         private void handleMousePosition()
         {
+            /*
             if (Event.current.button == 0)
             {
                 isLeftMouseButtonPressed = true;
@@ -170,7 +171,7 @@ namespace LevelEditor3D.Editor
                 isLeftMouseButtonPressed = false;
                 placeAsset(currentTile.transform.position);
             }
-
+            */
             Vector2 guiPosition = Event.current.mousePosition;
             Ray ray = HandleUtility.GUIPointToWorldRay(guiPosition);
             if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit))

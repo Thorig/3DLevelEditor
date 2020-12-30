@@ -24,21 +24,30 @@ namespace LevelEditor3D.Editor.UIElements
         {
             movement.x = 0;
             movement.y = 0;
-            if (keyCode == KeyCode.D)
+            movement.z = 0;
+            if (keyCode == KeyCode.K)
             {
-                movement.x = -1;
+                movement.z = -1;
             }
-            if (keyCode == KeyCode.A)
+            if (keyCode == KeyCode.I)
+            {
+                movement.z = 1;
+            }
+            if (keyCode == KeyCode.L)
             {
                 movement.x = 1;
             }
-            if (keyCode == KeyCode.W)
+            if (keyCode == KeyCode.J)
             {
-                movement.y = 1;
+                movement.x = -1;
             }
-            if (!lctrlPressed && keyCode == KeyCode.S)
+            if (keyCode == KeyCode.U)
             {
                 movement.y = -1;
+            }
+            if (keyCode == KeyCode.O)
+            {
+                movement.y = 1;
             }
             gridParent.transform.position += movement;
             EditorUtility.SetDirty(gridParent);
