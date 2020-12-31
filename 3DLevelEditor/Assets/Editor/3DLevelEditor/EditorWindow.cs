@@ -144,7 +144,7 @@ namespace LevelEditor3D.Editor
             }
             else 
             {
-                if (Event.current.isKey && Event.current.type == EventType.KeyUp &&
+                if (currentTile != null && Event.current.isKey && Event.current.type == EventType.KeyUp &&
                     Event.current.keyCode == KeyCode.P)
                 {
                     paletteService.placeAsset(currentTile.transform.position, selectedAssetBundle, selectedAsset);
@@ -171,6 +171,12 @@ namespace LevelEditor3D.Editor
                     currentTile.GetComponent<MeshRenderer>().material = materialMouseOver;
                     EditorUtility.SetDirty(currentTile);
                 }
+                else
+                {
+                    currentTile.GetComponent<MeshRenderer>().material = material;
+                    EditorUtility.SetDirty(currentTile);
+                    currentTile = null;
+                }
             }
             else
             {
@@ -178,6 +184,7 @@ namespace LevelEditor3D.Editor
                 {
                     currentTile.GetComponent<MeshRenderer>().material = material;
                     EditorUtility.SetDirty(currentTile);
+                    currentTile = null;
                 }
             }
         }

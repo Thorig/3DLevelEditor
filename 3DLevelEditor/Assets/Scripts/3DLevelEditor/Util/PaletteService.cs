@@ -79,6 +79,9 @@ namespace LevelEditor3D.Util
         {
             GameObject sceneOBject = GameObject.Instantiate(assetBundles[selectedAssetBundle].gameObjects[selectedAsset]);
             sceneOBject.transform.position = position;
+
+            sceneOBject.AddComponent<BoxCollider>();
+
             EditorUtility.SetDirty(sceneOBject);
         }
     }
