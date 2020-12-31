@@ -8,7 +8,7 @@ namespace LevelEditor3D.Util
     public class PaletteService
     {
         public bool isLoaded { get; set; }
-        private string manifestFile = "Assetbundlemanifest.xml";
+//        private string manifestFile = "Assetbundlemanifest.xml";
 
         private ManifestReader manifestReader = new ManifestReader();
         private AssetBundleLoader assetBundleLoader = new AssetBundleLoader();
@@ -30,7 +30,7 @@ namespace LevelEditor3D.Util
             return assetBundles;
         }
 
-        public void loadPalette()
+        public void loadPalette(string manifestFile)
         {
             if (!isLoaded)
             {

@@ -28,6 +28,7 @@ namespace LevelEditor3D.Editor
         static private PaletteService paletteService;
         static private int selectedAsset = 0;
         static private int selectedAssetBundle = 0;
+        static private string manifestData;
         #endregion
 
         [MenuItem("Window/3DLevelEditorWindow")]
@@ -106,7 +107,8 @@ namespace LevelEditor3D.Editor
         {
             if (!paletteService.isLoaded)
             {
-                paletteService.loadPalette();                
+                manifestData = FileSelect.selectFile();
+                paletteService.loadPalette(manifestData);                
             }
 
             List<AssetBundle> bundles = paletteService.getAssetBundles();
