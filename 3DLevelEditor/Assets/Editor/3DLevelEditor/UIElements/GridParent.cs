@@ -6,6 +6,7 @@ namespace LevelEditor3D.Editor.UIElements
     public class GridParent
     {
         private GameObject gridParent;
+        private GameObject align;
         private Vector3 movement;
         private bool lctrlPressed = false;
 
@@ -13,6 +14,7 @@ namespace LevelEditor3D.Editor.UIElements
         {
             movement = new Vector3();
             gridParent = GameObject.FindGameObjectWithTag("GridParent");
+            align = GameObject.FindGameObjectWithTag("Align");
         }
 
         public void handleKeyStrokes()
@@ -61,7 +63,12 @@ namespace LevelEditor3D.Editor.UIElements
             {
                 movement.y = 1;
             }
+            if (keyCode == KeyCode.N)
+            {
+                gridParent.transform.position = Vector3.zero;
+            }
             gridParent.transform.position += movement;
+            SceneView.lastActiveSceneView.AlignViewToObject(align.transform);
             EditorUtility.SetDirty(gridParent);
         }
     }

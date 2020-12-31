@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GridParent
   - GridTile
+  - Align
   layers:
   - Default
   - TransparentFX
