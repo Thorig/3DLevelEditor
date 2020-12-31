@@ -99,6 +99,22 @@ namespace LevelEditor3D.Util
 
             return assetBundleId;
         }
+        
+        public int getIndexForAsset(int selectedAssetBundle, string assetName)
+        {
+            int assetId = -1;
+
+            foreach (Prefab prefab in assetBundles[selectedAssetBundle].prefabList)
+            {
+                if (prefab.name.Equals(assetName))
+                {
+                    assetId = prefab.index;
+                    break;
+                }
+            }
+
+            return assetId;
+        }
 
         public void placeAsset(Vector3 position, int selectedAssetBundle, int selectedAsset)
         {

@@ -5,6 +5,6 @@ public class FileSelect
 {
     static public string selectFile()
     {
-        return EditorUtility.OpenFilePanel("Assetbundle manifest", "", "xml"); ;
+        return EditorUtility.OpenFilePanel("Assetbundle manifest", "", "xml");
     }
 }

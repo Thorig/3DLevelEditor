@@ -106,7 +106,10 @@ namespace LevelEditor3D.Editor
             {
                 SaveFileWriter.saveCurrentScene(paletteService);
             }
-            
+            if (GUILayout.Button("'Load", stampStyle))
+            {
+                SaveFileLoader.load(paletteService);
+            }
         }
 
         private void loadPaletteForStamp()
