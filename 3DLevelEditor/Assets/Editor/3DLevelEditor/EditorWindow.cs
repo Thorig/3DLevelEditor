@@ -101,6 +101,12 @@ namespace LevelEditor3D.Editor
                 loadPaletteForStamp();
             }
             GUILayout.EndHorizontal();
+
+            if (GUILayout.Button("'Save", stampStyle))
+            {
+                SaveFileWriter.saveCurrentScene(paletteService);
+            }
+            
         }
 
         private void loadPaletteForStamp()

@@ -75,6 +75,31 @@ namespace LevelEditor3D.Util
             }
         }
 
+        public int getAssetBundleId(string name)
+        {
+            int assetBundleId = -1;
+            int counter = 0;
+
+            foreach (AssetBundle assetBundle in assetBundles)
+            {
+                foreach (Prefab prefab in assetBundle.prefabList)
+                {
+                    if(prefab.name.Equals(name))
+                    {
+                        assetBundleId = counter;
+                        break;
+                    }
+                }
+                if(assetBundleId > -1)
+                {
+                    break;
+                }
+                counter++;
+            }
+
+            return assetBundleId;
+        }
+
         public void placeAsset(Vector3 position, int selectedAssetBundle, int selectedAsset)
         {
             if(parent == null)
