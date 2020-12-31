@@ -7,6 +7,7 @@ TagManager:
   - GridParent
   - GridTile
   - Align
+  - World
   layers:
   - Default
   - TransparentFX

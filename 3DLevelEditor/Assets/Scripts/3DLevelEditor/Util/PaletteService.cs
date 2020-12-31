@@ -7,9 +7,9 @@ namespace LevelEditor3D.Util
 {
     public class PaletteService
     {
-        public bool isLoaded { get; set; }
-//        private string manifestFile = "Assetbundlemanifest.xml";
+        private GameObject parent = null;
 
+        public bool isLoaded { get; set; }
         private ManifestReader manifestReader = new ManifestReader();
         private AssetBundleLoader assetBundleLoader = new AssetBundleLoader();
         private List<AssetBundle> assetBundles;
@@ -77,9 +77,21 @@ namespace LevelEditor3D.Util
 
         public void placeAsset(Vector3 position, int selectedAssetBundle, int selectedAsset)
         {
+            if(parent == null)
+            {
+                parent = GameObject.FindGameObjectWithTag("World");
+                if(parent == null)
+                {
+                    parent = new GameObject();
+                }
+                parent.name = "World";
+                parent.tag = "World";
+                parent.transform.position = Vector3.zero;
+                EditorUtility.SetDirty(parent);
+            }
             GameObject sceneOBject = GameObject.Instantiate(assetBundles[selectedAssetBundle].gameObjects[selectedAsset]);
             sceneOBject.transform.position = position;
-
+            sceneOBject.transform.parent = parent.transform;
             sceneOBject.AddComponent<BoxCollider>();
 
             EditorUtility.SetDirty(sceneOBject);

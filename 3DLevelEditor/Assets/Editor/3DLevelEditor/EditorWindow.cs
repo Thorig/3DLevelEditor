@@ -173,9 +173,12 @@ namespace LevelEditor3D.Editor
                 }
                 else
                 {
-                    currentTile.GetComponent<MeshRenderer>().material = material;
-                    EditorUtility.SetDirty(currentTile);
-                    currentTile = null;
+                    if (currentTile != null)
+                    {
+                        currentTile.GetComponent<MeshRenderer>().material = material;
+                        EditorUtility.SetDirty(currentTile);
+                        currentTile = null;
+                    }
                 }
             }
             else
