@@ -30,7 +30,7 @@ namespace LevelEditor3D.Util
             return assetBundles;
         }
 
-        public void loadPalette(string manifestFile)
+        public void FromManifestFile(string manifestFile)
         {
             if (!isLoaded)
             {
@@ -75,32 +75,50 @@ namespace LevelEditor3D.Util
             }
         }
 
-        public int getAssetBundleId(string name)
+        public int getAssetBundleIndexByBundleName(string name)
         {
-            int assetBundleId = -1;
-            int counter = 0;
+            int assetBundleId = 0;
+
+            foreach (AssetBundle assetBundle in assetBundles)
+            {
+                if(assetBundle.name.Equals(name))
+                {
+                    break;
+                }
+                assetBundleId++;
+            }
+            if(assetBundleId == assetBundles.Count)
+            {
+                assetBundleId = -1;
+            }
+
+            return assetBundleId;
+        }
+
+        public AssetBundle getAssetBundleByPrefabName(string name)
+        {
+            AssetBundle bundle = null;
 
             foreach (AssetBundle assetBundle in assetBundles)
             {
                 foreach (Prefab prefab in assetBundle.prefabList)
                 {
-                    if(prefab.name.Equals(name))
+                    if (prefab.name.Equals(name))
                     {
-                        assetBundleId = counter;
+                        bundle = assetBundle;
                         break;
                     }
                 }
-                if(assetBundleId > -1)
+                if (bundle != null)
                 {
                     break;
                 }
-                counter++;
             }
 
-            return assetBundleId;
+            return bundle;
         }
-        
-        public int getIndexForAsset(int selectedAssetBundle, string assetName)
+
+        public int getAssetIndex(int selectedAssetBundle, string assetName)
         {
             int assetId = -1;
 

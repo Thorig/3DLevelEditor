@@ -117,7 +117,7 @@ namespace LevelEditor3D.Editor
             if (!paletteService.isLoaded)
             {
                 manifestData = FileSelect.selectFile();
-                paletteService.loadPalette(manifestData);                
+                paletteService.FromManifestFile(manifestData);                
             }
 
             List<AssetBundle> bundles = paletteService.getAssetBundles();

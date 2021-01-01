@@ -19,20 +19,44 @@ namespace LevelEditor3D.Util
                 GameObject world = GameObject.FindGameObjectWithTag("World");
                 if (world != null)
                 {
+                    SaveFile saveFile = new SaveFile();
+                    string assetName = "";
+                    int indexAssetData = -1;
+
+                    foreach (Transform child in world.transform)
+                    {
+                        assetName = child.gameObject.name.Substring(0, child.gameObject.name.LastIndexOf('('));
+
+                        //Get AssetBundle from Palette
+                        AssetBundle tmpBundle = paletteService.getAssetBundleByPrefabName(assetName);
+
+                        //Add AssetBundle to header if needed
+                        int indexBundle = saveFile.header.addAssetBundle(tmpBundle.name);
+
+                        //Check if AssetData is know in 
+                        indexAssetData = saveFile.header.getAssetDataIndex(assetName, indexBundle);
+
+                        if (indexAssetData == -1)
+                        {
+                            //Add AssetData if needed
+                            AssetData data = new AssetData();
+                            data.name = assetName;
+                            data.assetBundle = indexBundle;
+                            indexAssetData = saveFile.header.addAssetData(data);
+                        }
+
+                        //Add Asset to Asset list
+                        Asset asset = new Asset();
+                        asset.assetDataId = indexAssetData;
+                        asset.position = child.position;
+                        asset.rotation = child.eulerAngles;
+
+                        saveFile.assets.Add(asset);
+                    }
+
                     using (StreamWriter writer = new StreamWriter(path, false))
                     {
-                        foreach (Transform child in world.transform)
-                        {
-                            Asset asset = new Asset();
-
-                            asset.name = child.gameObject.name;
-                            asset.name = asset.name.Substring(0, asset.name.LastIndexOf('('));
-                            asset.position = child.position;
-                            asset.rotation = child.eulerAngles;
-                            asset.assetBundle = paletteService.getAssetBundleId(asset.name);
-
-                            writer.WriteLine(JsonUtility.ToJson(asset));
-                        }
+                        writer.WriteLine(JsonUtility.ToJson(saveFile));
                         writer.Close();
                     }
                 }
