@@ -102,11 +102,11 @@ namespace LevelEditor3D.Editor
             }
             GUILayout.EndHorizontal();
 
-            if (GUILayout.Button("'Save", stampStyle))
+            if (GUILayout.Button("Save", stampStyle))
             {
                 SaveFileWriter.saveCurrentScene(paletteService);
             }
-            if (GUILayout.Button("'Load", stampStyle))
+            if (GUILayout.Button("Load", stampStyle))
             {
                 SaveFileLoader.load(paletteService);
             }
